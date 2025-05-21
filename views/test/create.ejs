@@ -1,0 +1,33 @@
+<%- include('../layouts/main', { title: 'Create Test' }) %>
+<h1>Create Test</h1>
+
+<form action="/test" method="POST">
+  <div class="form-group">
+    <label for="title">Test Title</label>
+    <input type="text" id="title" name="title" required>
+  </div>
+
+  <div class="form-group">
+    <label for="description">Test Description</label>
+    <textarea id="description" name="description" rows="3"></textarea>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="startDate">Start Date</label>
+      <input type="datetime-local" id="startDate" name="startDate" required>
+    </div>
+
+    <div class="form-group">
+      <label for="endDate">End Date</label>
+      <input type="datetime-local" id="endDate" name="endDate" required>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="timer">Set Timer (minutes)</label>
+    <input type="number" id="timer" name="timer" min="1">
+  </div>
+
+  <button type="submit" class="btn btn-primary">Next: Assign to Batches</button>
+</form>

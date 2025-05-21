@@ -1,0 +1,38 @@
+<%- include('../layouts/main', { title: 'Materials' }) %>
+<div class="header">
+  <h1>Course Materials</h1>
+  <% if (user.role === 'staff' || user.role === 'admin') { %>
+    <a href="/material/upload" class="btn btn-primary">Upload Material</a>
+  <% } %>
+</div>
+
+<div class="search-bar">
+  <input type="text" placeholder="Search Material...">
+</div>
+
+<div class="materials-list">
+  <% materials.forEach(material => { %>
+    <div class="material-card">
+      <div class="material-info">
+        <h3><%= material.title %></h3>
+        <p><%= material.fileSize %> | <%= new Date(material.createdAt).toLocaleDateString() %></p>
+        <p>Batch: <%= material.batch.name %></p>
+      </div>
+      <div class="material-actions">
+        <a href="<%= material.filePath %>" class="btn btn-download" download>
+          <i class="fas fa-download"></i> Download
+        </a>
+        <% if (user.role === 'staff' || user.role === 'admin') { %>
+          <a href="/material/edit/<%= material._id %>" class="btn btn-edit">
+            <i class="fas fa-edit"></i> Edit
+          </a>
+          <form action="/material/<%= material._id %>?_method=DELETE" method="POST">
+            <button type="submit" class="btn btn-danger">
+              <i class="fas fa-trash"></i> Delete
+            </button>
+          </form>
+        <% } %>
+      </div>
+    </div>
+  <% }); %>
+</div>

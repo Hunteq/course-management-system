@@ -1,0 +1,38 @@
+<%- include('../layouts/main', { title: 'Tests' }) %>
+<div class="header">
+    <h1>Tests</h1>
+    <% if (user.role === 'staff' || user.role === 'admin') { %>
+      <a href="/test/create" class="btn btn-primary">Create Test</a>
+    <% } %>
+  </div>
+  
+  <div class="tests-list">
+    <% tests.forEach(test => { %>
+      <div class="test-card">
+        <div class="test-info">
+          <h3><%= test.title %></h3>
+          <p><%= test.description %></p>
+          <p>Start: <%= new Date(test.startDate).toLocaleString() %></p>
+          <p>End: <%= new Date(test.endDate).toLocaleString() %></p>
+          <% if (test.timer) { %>
+            <p>Duration: <%= test.timer %> minutes</p>
+          <% } %>
+          <p>Batches: 
+            <% test.batches.forEach((batch, index) => { %>
+              <%= batch.name %><% if (index < test.batches.length - 1) { %>, <% } %>
+            <% }); %>
+          </p>
+        </div>
+        <div class="test-actions">
+          <a href="/test/<%= test._id %>/questions" class="btn btn-view">
+            <i class="fas fa-eye"></i> View Questions
+          </a>
+          <% if (user.role === 'student') { %>
+            <a href="/test/<%= test._id %>/take" class="btn btn-primary">
+              <i class="fas fa-play"></i> Take Test
+            </a>
+          <% } %>
+        </div>
+      </div>
+    <% }); %>
+  </div>

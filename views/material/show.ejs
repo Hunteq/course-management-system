@@ -1,0 +1,43 @@
+<%- include('../layouts/main.ejs', { title: material.title }) %>
+
+<div class="material-detail">
+  <div class="material-header">
+    <h1><%= material.title %></h1>
+    <div class="material-meta">
+      <span class="badge"><%= material.fileSize %></span>
+      <span class="badge"><%= new Date(material.createdAt).toLocaleDateString() %></span>
+      <span class="badge">Batch: <%= material.batch.name %></span>
+    </div>
+  </div>
+
+  <div class="material-content">
+    <% if (material.filePath.endsWith('.pdf')) { %>
+      <embed src="<%= material.filePath %>" type="application/pdf" width="100%" height="600px">
+    <% } else if (material.filePath.match(/\.(jpeg|jpg|png)$/)) { %>
+      <img src="<%= material.filePath %>" alt="<%= material.title %>" class="material-image">
+    <% } else { %>
+      <div class="material-download">
+        <p>This file cannot be previewed. Please download to view.</p>
+        <a href="<%= material.filePath %>" class="btn btn-download" download>
+          <i class="fas fa-download"></i> Download File
+        </a>
+      </div>
+    <% } %>
+  </div>
+
+  <div class="material-actions">
+    <a href="/material" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i> Back to Materials
+    </a>
+    <% if (user && (user.role === 'staff' || user.role === 'admin')) { %>
+      <a href="/material/edit/<%= material._id %>" class="btn btn-edit">
+        <i class="fas fa-edit"></i> Edit
+      </a>
+      <form action="/material/<%= material._id %>?_method=DELETE" method="POST" class="inline-form">
+        <button type="submit" class="btn btn-danger">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </form>
+    <% } %>
+  </div>
+</div>

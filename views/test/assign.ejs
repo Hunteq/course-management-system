@@ -1,0 +1,16 @@
+<%- include('../layouts/main', { title: 'Assign Test' }) %>
+<h1>Assign Test: <%= test.title %></h1>
+
+<form action="/test/<%= test._id %>/assign?_method=PUT" method="POST">
+  <div class="form-group">
+    <label>Assign to Batch</label>
+    <% batches.forEach(batch => { %>
+      <div class="checkbox-group">
+        <input type="checkbox" id="batch-<%= batch._id %>" name="batches" value="<%= batch._id %>">
+        <label for="batch-<%= batch._id %>"><%= batch.name %></label>
+      </div>
+    <% }); %>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Next: Add Questions</button>
+</form>

@@ -1,0 +1,29 @@
+<%- include('../layouts/main', { title: 'Edit Material' }) %>
+<h1>Edit Material</h1>
+
+<form action="/material/<%= material._id %>?_method=PUT" method="POST">
+  <div class="form-group">
+    <label for="title">Material Title</label>
+    <input type="text" id="title" name="title" value="<%= material.title %>" required>
+  </div>
+
+  <div class="form-group">
+    <label for="batch">Batch Selection</label>
+    <select id="batch" name="batch" required>
+      <% batches.forEach(batch => { %>
+        <option value="<%= batch._id %>" 
+          <%= batch._id.toString() === material.batch.toString() ? 'selected' : '' %>>
+          <%= batch.name %>
+        </option>
+      <% }); %>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Current File</label>
+    <p><%= material.filePath.split('/').pop() %> (<%= material.fileSize %>)</p>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Save Changes</button>
+  <a href="/material" class="btn btn-secondary">Cancel</a>
+</form>

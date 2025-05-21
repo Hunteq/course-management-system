@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../layouts/main', { title: 'Server Error' }) %>
+    <div class="error-container">
+        <h1>500 - Server Error</h1>
+        <% if (error) { %>
+            <% if (process.env.NODE_ENV === 'development') { %>
+                <pre><%= error.stack %></pre>
+            <% } else { %>
+                <p>Something went wrong on our end. We're working to fix it.</p>
+            <% } %>
+        <% } %>
+        <a href="/" class="btn">Return Home</a>
+    </div>
+</body>
+</html>

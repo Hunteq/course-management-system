@@ -1,0 +1,78 @@
+<%- include('../layouts/main', { title: 'Add Questions' }) %>
+<h1>Add Questions to: <%= test.title %></h1>
+
+<div class="questions-list">
+  <% test.questions.forEach((question, index) => { %>
+    <div class="question-card">
+      <h3>Question <%= index + 1 %></h3>
+      <p><%= question.text %></p>
+      <ul>
+        <% question.options.forEach(option => { %>
+          <li><%= option.text %> <% if (option.isCorrect) { %>(Correct)<% } %></li>
+        <% }); %>
+      </ul>
+      <% if (question.explanation) { %>
+        <p><strong>Explanation:</strong> <%= question.explanation %></p>
+      <% } %>
+    </div>
+  <% }); %>
+</div>
+
+<form action="/test/<%= test._id %>/questions" method="POST" class="question-form">
+  <div class="form-group">
+    <label for="text">Question Text</label>
+    <textarea id="text" name="text" rows="3" required></textarea>
+  </div>
+
+  <div class="form-group">
+    <label>Options</label>
+    <div id="options-container">
+      <div class="option-group">
+        <input type="text" name="options[0][text]" placeholder="Option text" required>
+        <select name="options[0][isCorrect]">
+          <option value="false">Incorrect</option>
+          <option value="true">Correct</option>
+        </select>
+        <button type="button" class="btn btn-remove" onclick="removeOption(this)">Remove</button>
+      </div>
+    </div>
+    <button type="button" class="btn btn-secondary" onclick="addOption()">Add Option</button>
+  </div>
+
+  <div class="form-group">
+    <label for="explanation">Explanation (optional)</label>
+    <textarea id="explanation" name="explanation" rows="2"></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Add Question</button>
+  <a href="/test" class="btn btn-secondary">Finish</a>
+</form>
+
+<script>
+  let optionCount = 1;
+  
+  function addOption() {
+    const container = document.getElementById('options-container');
+    const newOption = document.createElement('div');
+    newOption.className = 'option-group';
+    newOption.innerHTML = `
+      <input type="text" name="options[${optionCount}][text]" placeholder="Option text" required>
+      <select name="options[${optionCount}][isCorrect]">
+        <option value="false">Incorrect</option>
+        <option value="true">Correct</option>
+      </select>
+      <button type="button" class="btn btn-remove" onclick="removeOption(this)">Remove</button>
+    `;
+    container.appendChild(newOption);
+    optionCount++;
+  }
+  
+  function removeOption(button) {
+    const optionGroup = button.parentElement;
+    if (document.querySelectorAll('.option-group').length > 1) {
+      optionGroup.remove();
+    } else {
+      alert('At least one option is required');
+    }
+  }
+</script>

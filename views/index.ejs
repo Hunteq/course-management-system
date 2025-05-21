@@ -1,0 +1,57 @@
+<div class="dashboard">
+    <% if (!user) { %>
+      <div class="welcome-message">
+        <h1>Welcome to Course Management System</h1>
+        <p>Please login or register to access the system</p>
+        <div class="auth-buttons">
+          <a href="/auth/login" class="btn btn-primary">Login</a>
+          <a href="/auth/register" class="btn btn-secondary">Register</a>
+        </div>
+      </div>
+    <% } else { %>
+      <div class="dashboard-header">
+        <h1>Welcome, <%= user.name %></h1>
+        <p>Role: <span class="badge"><%= user.role %></span></p>
+        <% if (user.batch) { %>
+          <p>Batch: <span class="badge"><%= user.batch.name %></span></p>
+        <% } %>
+      </div>
+  
+      <div class="dashboard-sections">
+        <div class="dashboard-section">
+          <h2><i class="fas fa-book"></i> Recent Materials</h2>
+          <% if (materials.length > 0) { %>
+            <div class="materials-list">
+              <% materials.slice(0, 3).forEach(material => { %>
+                <div class="material-card">
+                  <h3><a href="/material/<%= material._id %>"><%= material.title %></a></h3>
+                  <p><%= material.fileSize %> | <%= new Date(material.createdAt).toLocaleDateString() %></p>
+                </div>
+              <% }); %>
+            </div>
+            <a href="/material" class="btn btn-link">View All Materials</a>
+          <% } else { %>
+            <p>No materials available</p>
+          <% } %>
+        </div>
+  
+        <div class="dashboard-section">
+          <h2><i class="fas fa-clipboard-list"></i> Upcoming Tests</h2>
+          <% if (tests.length > 0) { %>
+            <div class="tests-list">
+              <% tests.slice(0, 3).forEach(test => { %>
+                <div class="test-card">
+                  <h3><a href="/test/<%= test._id %>/questions"><%= test.title %></a></h3>
+                  <p>Start: <%= new Date(test.startDate).toLocaleString() %></p>
+                  <p>End: <%= new Date(test.endDate).toLocaleString() %></p>
+                </div>
+              <% }); %>
+            </div>
+            <a href="/test" class="btn btn-link">View All Tests</a>
+          <% } else { %>
+            <p>No upcoming tests</p>
+          <% } %>
+        </div>
+      </div>
+    <% } %>
+  </div>
