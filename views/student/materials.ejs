@@ -1,0 +1,44 @@
+<!-- student/materials.ejs -->
+<div class="card">
+    <div class="card-header">
+      <h4>Course Materials</h4>
+    </div>
+    <div class="card-body">
+      <% if (materials.length === 0) { %>
+        <div class="alert alert-info">No materials available for your batch.</div>
+      <% } else { %>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Uploaded By</th>
+                <th>File Type</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% materials.forEach(material => { %>
+                <tr>
+                  <td><%= material.title %></td>
+                  <td><%= material.description || 'No description' %></td>
+                  <td><%= material.uploadedBy.name %></td>
+                  <td><%= material.fileType.toUpperCase() %></td>
+                  <td><%= material.createdAt.toLocaleDateString() %></td>
+                  <td>
+                    <a href="<%= material.filePath %>" 
+                       class="btn btn-sm btn-primary" 
+                       download="<%= material.title %>.<%= material.fileType %>">
+                      <i class="bi bi-download"></i> Download
+                    </a>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+  </div>

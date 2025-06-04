@@ -1,0 +1,82 @@
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h4><%= batch.name %></h4>
+      <div>
+        <button class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+          <i class="bi bi-plus-circle"></i> Add Student
+        </button>
+      </div>
+    </div>
+    <div class="card-body">
+      <p><%= batch.description || 'No description provided' %></p>
+      <p><small class="text-muted">Created by: <%= batch.createdBy.name %> on <%= new Date(batch.createdAt).toLocaleDateString() %></small></p>
+    </div>
+  </div>
+  
+  <div class="card">
+    <div class="card-header">
+      <h5>Students in this Batch</h5>
+    </div>
+    <div class="card-body">
+      <% if (batch.students.length === 0) { %>
+        <div class="alert alert-info">No students in this batch yet.</div>
+      <% } else { %>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Joined</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% batch.students.forEach(student => { %>
+                <tr>
+                  <td><%= student.name %></td>
+                  <td><%= student.email %></td>
+                  <td><%= new Date(student.createdAt).toLocaleDateString() %></td>
+                  <td>
+                    <form action="/admin/batches/<%= batch._id %>/students/<%= student._id %>?_method=DELETE" method="POST">
+                        <button type="submit" class="btn btn-danger">Remove</button>
+                      </form>
+                  </form>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+  </div>
+  
+  <!-- Add Student Modal -->
+  <div class="modal fade" id="addStudentModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Student to Batch</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form action="/admin/batches/<%= batch._id %>/add-student" method="POST">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Select Student</label>
+              <select class="form-select" name="studentId" required>
+                <option value="">Select a student</option>
+                <% studentsNotInBatch.forEach(student => { %>
+                  <option value="<%= student._id %>"><%= student.name %> (<%= student.email %>)</option>
+                <% }); %>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Add Student</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,38 @@
+body {
+    padding-top: 56px;
+  }
+  
+  .timer {
+    font-weight: bold;
+  }
+  
+  .option-item {
+    position: relative;
+  }
+  
+  .remove-option {
+    cursor: pointer;
+  }
+  
+  .test-question {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+  }
+  
+  .test-question img {
+    max-height: 200px;
+  }
+  
+  .result-correct {
+    background-color: #d4edda;
+  }
+  
+  .result-incorrect {
+    background-color: #f8d7da;
+  }
+  
+  .result-pending {
+    background-color: #fff3cd;
+  }

@@ -1,0 +1,38 @@
+<div class="card">
+    <div class="card-header">
+        <h4>Upload Course Material</h4>
+    </div>
+    <div class="card-body">
+        <form action="/staff/upload-material" method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label">Title *</label>
+                <input type="text" class="form-control" name="title" required>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea class="form-control" name="description" rows="3"></textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">File *</label>
+                <input type="file" class="form-control" name="materialFile" required>
+                <div class="form-text">Supported formats: PDF, PPT, DOC, XLS, ZIP (Max 25MB)</div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Share with Batches</label>
+                <select class="form-select" name="batches" multiple>
+                    <option value="">All Batches</option>
+                    <% batches.forEach(batch => { %>
+                        <option value="<%= batch._id %>"><%= batch.name %></option>
+                    <% }); %>
+                </select>
+                <div class="form-text">Hold CTRL to select multiple batches</div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Upload Material</button>
+            <a href="/staff/materials" class="btn btn-outline-secondary">Cancel</a>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,63 @@
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h4>Question Bank</h4>
+      <a href="/questions/create" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Add Question
+      </a>
+    </div>
+    <div class="card-body">
+      <% if (questions.length === 0) { %>
+        <div class="alert alert-info">No questions found. Create your first question.</div>
+      <% } else { %>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Question</th>
+                <th>Type</th>
+                <th>Marks</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% questions.forEach(question => { %>
+                <tr>
+                  <td>
+                    <div class="fw-bold"><%= question.questionText.substring(0, 50) %><%= question.questionText.length > 50 ? '...' : '' %></div>
+                    <% if (question.questionType === 'mcq') { %>
+                      <small class="text-muted"><%= question.options.length %> options</small>
+                    <% } %>
+                  </td>
+                  <td>
+                    <span class="badge bg-<%= 
+                      question.questionType === 'mcq' ? 'primary' : 
+                      question.questionType === 'short' ? 'info' : 
+                      question.questionType === 'long' ? 'warning' : 'success' 
+                    %>">
+                      <%= question.questionType.toUpperCase() %>
+                    </span>
+                  </td>
+                  <td><%= question.marks %></td>
+                  <td><%= new Date(question.createdAt).toLocaleDateString() %></td>
+                  <td>
+                    <div class="btn-group btn-group-sm">
+                      <a href="/questions/<%= question._id %>/edit" class="btn btn-outline-secondary">
+                        Edit
+                      </a>
+                      <a href="/questions/<%= question._id %>/preview" class="btn btn-outline-info">
+                        Preview
+                      </a>
+                      <form action="/questions/<%= question._id %>?_method=DELETE" method="POST">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+  </div>

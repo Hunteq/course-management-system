@@ -1,0 +1,50 @@
+<div class="card">
+    <div class="card-header">
+        <h4>Edit Material: <%= material.title %></h4>
+    </div>
+    <div class="card-body">
+        <form action="/staff/materials/<%= material._id %>?_method=PUT" method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label">Title *</label>
+                <input type="text" class="form-control" name="title" value="<%= material.title %>" required>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea class="form-control" name="description" rows="3"><%= material.description || '' %></textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Current File</label>
+                <div class="form-control bg-light">
+                    <a href="<%= material.filePath %>" target="_blank"><%= material.filePath.split('/').pop() %></a>
+                    <span class="float-end"><%= (material.fileSize / (1024 * 1024)).toFixed(2) %>MB</span>
+                </div>
+                <div class="form-text">To change the file, upload a new one below.</div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Upload New File (Optional)</label>
+                <input type="file" class="form-control" name="materialFile" accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx,.zip">
+                <div class="form-text">Max file size: 25MB. Allowed formats: PDF, PPT, DOC, XLS, ZIP</div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Share with Batches</label>
+                <select class="form-select" name="batches" multiple>
+                    <option value="">All Batches</option>
+                    <% batches.forEach(batch => { %>
+                        <option value="<%= batch._id %>" 
+                            <%= material.batches.some(b => b.toString() === batch._id.toString()) ? 'selected' : '' %>>
+                            <%= batch.name %>
+                        </option>
+                    <% }); %>
+                </select>
+                <div class="form-text">Hold CTRL to select multiple batches</div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Update Material</button>
+            <a href="/staff/materials" class="btn btn-outline-secondary">Cancel</a>
+        </form>
+    </div>
+</div>

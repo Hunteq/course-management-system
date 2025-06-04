@@ -1,0 +1,142 @@
+<div class="card">
+    <div class="card-header">
+      <h4>Edit Question</h4>
+    </div>
+    <div class="card-body">
+        <form action="/questions/<%= question._id %>?_method=PUT" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="_method" value="PUT">
+        
+        <div class="mb-3">
+          <label class="form-label">Question Type</label>
+          <select class="form-select" name="questionType" id="questionType" required>
+            <option value="mcq" <%= question.questionType === 'mcq' ? 'selected' : '' %>>Multiple Choice (MCQ)</option>
+            <option value="short" <%= question.questionType === 'short' ? 'selected' : '' %>>Short Answer (1 mark)</option>
+            <option value="long" <%= question.questionType === 'long' ? 'selected' : '' %>>Long Answer (2 marks)</option>
+            <option value="image" <%= question.questionType === 'image' ? 'selected' : '' %>>Image Based (5 marks)</option>
+          </select>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Question Text</label>
+          <textarea class="form-control" name="questionText" rows="3" required><%= question.questionText %></textarea>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Marks</label>
+          <select class="form-select" name="marks" required>
+            <option value="1" <%= question.marks === 1 ? 'selected' : '' %>>1 Mark</option>
+            <option value="2" <%= question.marks === 2 ? 'selected' : '' %>>2 Marks</option>
+            <option value="5" <%= question.marks === 5 ? 'selected' : '' %>>5 Marks</option>
+          </select>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Question Image (Optional)</label>
+          <% if (question.questionImage) { %>
+            <div class="mb-2">
+              <img src="<%= question.questionImage %>" class="img-thumbnail" style="max-height: 150px;">
+              <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" name="removeImage" id="removeImage">
+                <label class="form-check-label" for="removeImage">Remove current image</label>
+              </div>
+            </div>
+          <% } %>
+          <input type="file" class="form-control" name="image" accept="image/*">
+        </div>
+        
+        <!-- MCQ Options -->
+        <div id="mcqOptions" <%= question.questionType === 'mcq' ? 'style="display: block;"' : 'style="display: none;"' %>>
+          <div class="mb-3">
+            <label class="form-label">MCQ Options</label>
+            <div id="optionsContainer">
+              <% if (question.questionType === 'mcq') { %>
+                <% question.options.forEach((option, index) => { %>
+                  <div class="option-item mb-2">
+                    <div class="input-group">
+                      <input type="text" class="form-control" name="options[]" 
+                        value="<%= option.text %>" placeholder="Option text" required>
+                      <div class="input-group-text">
+                        <input class="form-check-input" type="checkbox" 
+                          name="isCorrect_<%= index %>" <%= option.isCorrect ? 'checked' : '' %>>
+                      </div>
+                      <button type="button" class="btn btn-outline-danger remove-option">×</button>
+                    </div>
+                    <% if (option.image) { %>
+                      <div class="mt-2">
+                        <img src="<%= option.image %>" class="img-thumbnail" style="max-height: 100px;">
+                      </div>
+                    <% } %>
+                  </div>
+                <% }); %>
+              <% } else { %>
+                <div class="option-item mb-2">
+                  <div class="input-group">
+                    <input type="text" class="form-control" name="options[]" placeholder="Option text" required>
+                    <div class="input-group-text">
+                      <input class="form-check-input" type="checkbox" name="isCorrect_0">
+                    </div>
+                    <button type="button" class="btn btn-outline-danger remove-option">×</button>
+                  </div>
+                </div>
+              <% } %>
+            </div>
+            <button type="button" id="addOption" class="btn btn-sm btn-secondary mt-2">Add Option</button>
+          </div>
+        </div>
+        
+        <!-- Correct Answer -->
+        <div id="correctAnswerField" <%= question.questionType !== 'mcq' ? 'style="display: block;"' : 'style="display: none;"' %>>
+          <div class="mb-3">
+            <label class="form-label">Correct Answer</label>
+            <textarea class="form-control" name="correctAnswer" rows="3"><%= question.correctAnswer %></textarea>
+          </div>
+        </div>
+        
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <a href="/questions" class="btn btn-secondary">Cancel</a>
+          <button type="submit" class="btn btn-primary">Update Question</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <script>
+  // Show/hide fields based on question type
+  document.getElementById('questionType').addEventListener('change', function() {
+    const mcqOptions = document.getElementById('mcqOptions');
+    const correctAnswerField = document.getElementById('correctAnswerField');
+    
+    if (this.value === 'mcq') {
+      mcqOptions.style.display = 'block';
+      correctAnswerField.style.display = 'none';
+    } else {
+      mcqOptions.style.display = 'none';
+      correctAnswerField.style.display = 'block';
+    }
+  });
+  
+  // Add/remove MCQ options
+  let optionCount =  question.questionType === 'mcq' ? question.options.length : 1 ;
+  document.getElementById('addOption').addEventListener('click', function() {
+    const container = document.getElementById('optionsContainer');
+    const newOption = document.createElement('div');
+    newOption.className = 'option-item mb-2';
+    newOption.innerHTML = `
+      <div class="input-group">
+        <input type="text" class="form-control" name="options[]" placeholder="Option text" required>
+        <div class="input-group-text">
+          <input class="form-check-input" type="checkbox" name="isCorrect_${optionCount}">
+        </div>
+        <button type="button" class="btn btn-outline-danger remove-option">×</button>
+      </div>
+    `;
+    container.appendChild(newOption);
+    optionCount++;
+  });
+  
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('remove-option')) {
+      e.target.closest('.option-item').remove();
+    }
+  });
+</script>

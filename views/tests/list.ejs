@@ -1,0 +1,75 @@
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h4>Manage Tests</h4>
+      <a href="/tests/create" class="btn btn-primary">Create New Test</a>
+    </div>
+    <div class="card-body">
+      <% if (tests.length === 0) { %>
+        <div class="alert alert-info">No tests found. Create your first test.</div>
+      <% } else { %>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Batches</th>
+                <th>Dates</th>
+                <th>Questions</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% tests.forEach(test => { %>
+                <tr>
+                  <td><%= test.title %></td>
+                  <td>
+                    <% test.batches.forEach(batch => { %>
+                      <span class="badge bg-secondary me-1"><%= batch.name %></span>
+                    <% }); %>
+                  </td>
+                  <td>
+                    <small>
+                      <%= new Date(test.startDate).toLocaleString() %><br>
+                      to <%= new Date(test.endDate).toLocaleString() %>
+                    </small>
+                  </td>
+                  <td><%= test.questions.length %></td>
+                  <td>
+                    <% if (test.isPublished) { %>
+                      <span class="badge bg-success">Published</span>
+                    <% } else { %>
+                      <span class="badge bg-warning text-dark">Draft</span>
+                    <% } %>
+                  </td>
+                  <td>
+                    <div class="btn-group">
+                      <a href="/tests/<%= test._id %>/questions" class="btn btn-sm btn-outline-primary">
+                        Questions
+                      </a>
+                      <a href="/tests/<%= test._id %>/edit" class="btn btn-sm btn-outline-secondary">
+                        Edit
+                      </a>
+                      <% if (!test.isPublished) { %>
+                        <form action="/tests/<%= test._id %>/publish" method="POST" class="d-inline">
+                          <button type="submit" class="btn btn-sm btn-success">Publish</button>
+                        </form>
+                      <% } else { %>
+                        <form action="/tests/<%= test._id %>/unpublish" method="POST" class="d-inline">
+                          <button type="submit" class="btn btn-sm btn-warning">Unpublish</button>
+                        </form>
+                      <% } %>
+                      <form action="/tests/<%= test._id %>?_method=DELETE" method="POST" class="d-inline">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+  </div>

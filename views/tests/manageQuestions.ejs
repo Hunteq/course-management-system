@@ -1,0 +1,171 @@
+<div class="card mb-4">
+    <div class="card-header">
+      <h4>Manage Questions: <%= test.title %></h4>
+    </div>
+    <div class="card-body">
+      <div class="d-flex justify-content-between mb-3">
+        <div>
+          <span class="badge bg-primary me-2">Total Marks: <%= test.questions.reduce((sum, item) => sum + item.marks, 0) %> / <%= test.totalMarks %></span>
+          <span class="badge bg-secondary"><%= test.questions.length %> Questions</span>
+        </div>
+        <a href="/tests/<%= test._id %>/preview" class="btn btn-sm btn-outline-primary">
+          <i class="bi bi-eye"></i> Preview Test
+        </a>
+      </div>
+      
+      <% if (test.questions.length === 0) { %>
+        <div class="alert alert-info">No questions added yet. Add questions from your question bank below.</div>
+      <% } else { %>
+        <div class="list-group mb-4">
+          <% test.questions.forEach((item, index) => { 
+            const question = item.question;
+          %>
+            <div class="list-group-item">
+              <div class="d-flex justify-content-between">
+                <h6>Question <%= index + 1 %> (<%= item.marks %> mark<%= item.marks !== 1 ? 's' : '' %>)</h6>
+                <form action="/tests/<%= test._id %>/questions/<%= question._id %>/remove" method="POST">
+  <button type="submit" class="btn btn-sm btn-outline-danger">
+    <i class="bi bi-trash"></i> Remove
+  </button>
+</form>
+              </div>
+              <p class="mb-1"><%= question.questionText %></p>
+              <% if (question.questionType === 'mcq') { %>
+                <div class="ms-3 mt-2">
+                  <% question.options.forEach((option, optIndex) => { %>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" disabled <%= option.isCorrect ? 'checked' : '' %>>
+                      <label class="form-check-label">
+                        <%= option.text %>
+                      </label>
+                    </div>
+                  <% }); %>
+                </div>
+              <% } else { %>
+                <div class="alert alert-light mt-2">
+                  <strong>Correct Answer:</strong> <%= question.correctAnswer %>
+                </div>
+              <% } %>
+            </div>
+          <% }); %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+  
+  <div class="card">
+    <div class="card-header">
+      <h5>Add Questions from Bank</h5>
+    </div>
+    <div class="card-body">
+      <% if (questions.length === 0) { %>
+        <div class="alert alert-info">No questions available in your question bank. <a href="/questions/create">Create some questions</a> first.</div>
+      <% } else { %>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Question</th>
+                <th>Type</th>
+                <th>Marks</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% questions.forEach(question => { %>
+                <tr>
+                  <td>
+                    <div class="fw-bold"><%= question.questionText.substring(0, 50) %><%= question.questionText.length > 50 ? '...' : '' %></div>
+                    <% if (question.questionType === 'mcq') { %>
+                      <small class="text-muted"><%= question.options.length %> options</small>
+                    <% } %>
+                  </td>
+                  <td>
+                    <span class="badge bg-<%= 
+                      question.questionType === 'mcq' ? 'primary' : 
+                      question.questionType === 'short' ? 'info' : 
+                      question.questionType === 'long' ? 'warning' : 'success' 
+                    %>">
+                      <%= question.questionType.toUpperCase() %>
+                    </span>
+                  </td>
+                  <td><%= question.marks %></td>
+                  <td>
+                    <form action="/tests/<%= test._id %>/questions/add" method="POST" class="d-inline">
+                      <input type="hidden" name="questionId" value="<%= question._id %>">
+                      <div class="input-group input-group-sm" style="width: 120px;">
+                        <select class="form-select" name="marks" required>
+                          <option value="1" <%= question.marks === 1 ? 'selected' : '' %>>1 mark</option>
+                          <option value="2" <%= question.marks === 2 ? 'selected' : '' %>>2 marks</option>
+                          <option value="5" <%= question.marks === 5 ? 'selected' : '' %>>5 marks</option>
+                        </select>
+                        <button type="submit" class="btn btn-success">
+                          Add
+                        </button>
+                      </div>
+                    </form>
+                    <a href="/questions/<%= question._id %>/preview" class="btn btn-sm btn-outline-info ms-1" data-bs-toggle="modal" data-bs-target="#questionPreviewModal">
+                      Preview
+                    </a>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+  </div>
+  
+  <!-- Question Preview Modal -->
+  <div class="modal fade" id="questionPreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Question Preview</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="text-center py-5">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Load question preview in modal
+    const previewModal = document.getElementById('questionPreviewModal');
+    if (previewModal) {
+      previewModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const previewUrl = button.getAttribute('href');
+        const modalBody = previewModal.querySelector('.modal-body');
+        
+        fetch(previewUrl)
+          .then(response => response.text())
+          .then(html => {
+            modalBody.innerHTML = html;
+          })
+          .catch(error => {
+            modalBody.innerHTML = `<div class="alert alert-danger">Error loading preview: ${error.message}</div>`;
+          });
+      });
+      
+      previewModal.addEventListener('hidden.bs.modal', function() {
+        const modalBody = previewModal.querySelector('.modal-body');
+        modalBody.innerHTML = `
+          <div class="text-center py-5">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        `;
+      });
+    }
+  </script>
+

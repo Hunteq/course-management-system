@@ -1,0 +1,80 @@
+<div class="card">
+    <div class="card-header">
+      <h4>Edit Test: <%= test.title %></h4>
+    </div>
+    <div class="card-body">
+        <form action="/tests/<%= test._id %>?_method=PUT" method="POST">
+            <input type="hidden" name="_method" value="PUT">
+        
+        <div class="mb-3">
+          <label class="form-label">Test Title</label>
+          <input type="text" class="form-control" name="title" value="<%= test.title %>" required>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" name="description" rows="3"><%= test.description %></textarea>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Duration (minutes)</label>
+            <input type="number" class="form-control" name="duration" min="1" value="<%= test.duration %>" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Total Marks</label>
+            <input type="number" class="form-control" name="totalMarks" min="1" value="<%= test.totalMarks %>" required>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Passing Marks</label>
+            <input type="number" class="form-control" name="passingMarks" min="1" value="<%= test.passingMarks %>" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Batches</label>
+            <select class="form-select" name="batches" multiple required>
+              <% batches.forEach(batch => { %>
+                <option value="<%= batch._id %>" 
+                  <%= test.batches.some(b => b.toString() === batch._id.toString()) ? 'selected' : '' %>>
+                  <%= batch.name %>
+                </option>
+              <% }); %>
+            </select>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Start Date & Time</label>
+            <input type="datetime-local" class="form-control" name="startDate" 
+              value="<%= new Date(test.startDate).toISOString().slice(0, 16) %>" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label">End Date & Time</label>
+            <input type="datetime-local" class="form-control" name="endDate" 
+              value="<%= new Date(test.endDate).toISOString().slice(0, 16) %>" required>
+          </div>
+        </div>
+        
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <a href="/tests" class="btn btn-secondary">Cancel</a>
+          <button type="submit" class="btn btn-primary">Update Test</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <script>
+    // Date validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+      const startDate = new Date(document.querySelector('input[name="startDate"]').value);
+      const endDate = new Date(document.querySelector('input[name="endDate"]').value);
+      
+      if (startDate >= endDate) {
+        e.preventDefault();
+        alert('End date must be after start date');
+      }
+    });
+  </script>

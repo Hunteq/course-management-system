@@ -1,0 +1,153 @@
+<div class="card">
+    <div class="card-header">
+      <h4>Test Results</h4>
+      <ul class="nav nav-tabs card-header-tabs">
+        <li class="nav-item">
+          <a class="nav-link active" data-bs-toggle="tab" href="#all">All Results</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#passed">Passed</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="tab" href="#failed">Failed</a>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="card-body">
+      <div class="tab-content">
+        <!-- All Results Tab -->
+        <div class="tab-pane fade show active" id="all">
+          <% if (allResults.length === 0) { %>
+            <div class="alert alert-info">You haven't taken any tests yet.</div>
+          <% } else { %>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Test</th>
+                    <th>Date Taken</th>
+                    <th>Marks Obtained</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% allResults.forEach(result => { %>
+                    <tr>
+                      <td><%= result.test.title %></td>
+                      <td><%= new Date(result.submittedAt).toLocaleDateString() %></td>
+                      <td>
+                        <%= result.totalMarksObtained %> / <%= result.test.totalMarks %>
+                        <% if (result.isGraded) { %>
+                          <span class="badge bg-<%= result.totalMarksObtained >= result.test.passingMarks ? 'success' : 'danger' %>">
+                            <%= result.totalMarksObtained >= result.test.passingMarks ? 'Passed' : 'Failed' %>
+                          </span>
+                        <% } %>
+                      </td>
+                      <td>
+                        <% if (result.isGraded) { %>
+                          <span class="badge bg-success">Graded</span>
+                        <% } else { %>
+                          <span class="badge bg-warning text-dark">Pending</span>
+                        <% } %>
+                      </td>
+                      <td>
+                        <a href="/student/results/<%= result._id %>" class="btn btn-sm btn-outline-primary">
+                          View Details
+                        </a>
+                      </td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          <% } %>
+        </div>
+        
+        <!-- Passed Results Tab -->
+        <div class="tab-pane fade" id="passed">
+          <% if (passedResults.length === 0) { %>
+            <div class="alert alert-info">You haven't passed any tests yet.</div>
+          <% } else { %>
+            <div class="row">
+              <% passedResults.forEach(result => { %>
+                <div class="col-md-6 mb-4">
+                  <div class="card h-100 border-success">
+                    <div class="card-header bg-success text-white">
+                      <h5><%= result.test.title %></h5>
+                    </div>
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between mb-2">
+                        <span>Marks:</span>
+                        <strong><%= result.totalMarksObtained %> / <%= result.test.totalMarks %></strong>
+                      </div>
+                      <div class="d-flex justify-content-between mb-2">
+                        <span>Date:</span>
+                        <span><%= new Date(result.submittedAt).toLocaleDateString() %></span>
+                      </div>
+                      <% if (result.gradedBy) { %>
+                        <div class="d-flex justify-content-between">
+                          <span>Graded By:</span>
+                          <span><%= result.gradedBy.name %></span>
+                        </div>
+                      <% } %>
+                    </div>
+                    <div class="card-footer">
+                      <a href="/student/results/<%= result._id %>" class="btn btn-sm btn-success">
+                        View Details
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
+        
+        <!-- Failed Results Tab -->
+        <div class="tab-pane fade" id="failed">
+          <% if (failedResults.length === 0) { %>
+            <div class="alert alert-info">You haven't failed any tests yet.</div>
+          <% } else { %>
+            <div class="row">
+              <% failedResults.forEach(result => { %>
+                <div class="col-md-6 mb-4">
+                  <div class="card h-100 border-danger">
+                    <div class="card-header bg-danger text-white">
+                      <h5><%= result.test.title %></h5>
+                    </div>
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between mb-2">
+                        <span>Marks:</span>
+                        <strong><%= result.totalMarksObtained %> / <%= result.test.totalMarks %></strong>
+                      </div>
+                      <div class="d-flex justify-content-between mb-2">
+                        <span>Passing Marks:</span>
+                        <span><%= result.test.passingMarks %></span>
+                      </div>
+                      <div class="d-flex justify-content-between mb-2">
+                        <span>Date:</span>
+                        <span><%= new Date(result.submittedAt).toLocaleDateString() %></span>
+                      </div>
+                      <% if (result.gradedBy) { %>
+                        <div class="d-flex justify-content-between">
+                          <span>Graded By:</span>
+                          <span><%= result.gradedBy.name %></span>
+                        </div>
+                      <% } %>
+                    </div>
+                    <div class="card-footer">
+                      <a href="/student/results/<%= result._id %>" class="btn btn-sm btn-danger">
+                        View Details
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>

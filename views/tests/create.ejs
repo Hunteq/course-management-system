@@ -1,0 +1,90 @@
+<div class="card">
+    <div class="card-header">
+      <h4>Create New Test</h4>
+    </div>
+    <div class="card-body">
+      <form action="/tests" method="POST">
+        <div class="mb-3">
+          <label for="title" class="form-label">Test Title</label>
+          <input type="text" class="form-control" id="title" name="title" required>
+        </div>
+        
+        <div class="mb-3">
+          <label for="description" class="form-label">Description</label>
+          <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label for="duration" class="form-label">Duration (minutes)</label>
+            <input type="number" class="form-control" id="duration" name="duration" min="1" required>
+          </div>
+          
+          <div class="col-md-4 mb-3">
+            <label for="totalMarks" class="form-label">Total Marks</label>
+            <input type="number" class="form-control" id="totalMarks" name="totalMarks" min="1" required>
+          </div>
+          
+          <div class="col-md-4 mb-3">
+            <label for="passingMarks" class="form-label">Passing Marks</label>
+            <input type="number" class="form-control" id="passingMarks" name="passingMarks" min="1" required>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="startDate" class="form-label">Start Date & Time</label>
+            <input type="datetime-local" class="form-control" id="startDate" name="startDate" required>
+          </div>
+          
+          <div class="col-md-6 mb-3">
+            <label for="endDate" class="form-label">End Date & Time</label>
+            <input type="datetime-local" class="form-control" id="endDate" name="endDate" required>
+          </div>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Assign to Batches</label>
+          <% batches.forEach(batch => { %>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="batches" value="<%= batch._id %>" id="batch-<%= batch._id %>">
+              <label class="form-check-label" for="batch-<%= batch._id %>">
+                <%= batch.name %>
+              </label>
+            </div>
+          <% }); %>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Create Test</button>
+        <a href="/tests" class="btn btn-secondary">Cancel</a>
+      </form>
+    </div>
+  </div>
+  
+  <script>
+    // Client-side validation for dates
+    document.querySelector('form').addEventListener('submit', function(e) {
+      const startDate = new Date(document.getElementById('startDate').value);
+      const endDate = new Date(document.getElementById('endDate').value);
+      const now = new Date();
+      
+      if (startDate >= endDate) {
+        alert('End date must be after start date');
+        e.preventDefault();
+        return false;
+      }
+      
+      if (startDate < now) {
+        alert('Start date cannot be in the past');
+        e.preventDefault();
+        return false;
+      }
+      
+      const batches = document.querySelectorAll('input[name="batches"]:checked');
+      if (batches.length === 0) {
+        alert('Please select at least one batch');
+        e.preventDefault();
+        return false;
+      }
+    });
+  </script>

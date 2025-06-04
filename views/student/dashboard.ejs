@@ -1,0 +1,89 @@
+<div class="row">
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+          <h5>Active Tests</h5>
+        </div>
+        <div class="card-body">
+          <% if (activeTests.length === 0) { %>
+            <div class="alert alert-info">No active tests at this time.</div>
+          <% } else { %>
+            <div class="list-group">
+              <% activeTests.forEach(test => { %>
+                <a href="/tests/<%= test._id %>/take" class="list-group-item list-group-item-action">
+                  <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1"><%= test.title %></h6>
+                    <small><%= test.questions.length %> questions</small>
+                  </div>
+                  <p class="mb-1"><%= test.description || 'No description' %></p>
+                  <div class="d-flex justify-content-between">
+                    <small>Available until: <%= new Date(test.endDate).toLocaleString() %></small>
+                    <span class="badge bg-success">Active</span>
+                  </div>
+                </a>
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-header bg-warning text-dark">
+          <h5>Upcoming Tests</h5>
+        </div>
+        <div class="card-body">
+          <% if (upcomingTests.length === 0) { %>
+            <div class="alert alert-info">No upcoming tests scheduled.</div>
+          <% } else { %>
+            <div class="list-group">
+              <% upcomingTests.forEach(test => { %>
+                <div class="list-group-item">
+                  <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1"><%= test.title %></h6>
+                    <small><%= test.totalMarks %> marks</small>
+                  </div>
+                  <p class="mb-1">Starts: <%= new Date(test.startDate).toLocaleString() %></p>
+                  <div class="d-flex justify-content-between">
+                    <small>Duration: <%= test.duration %> minutes</small>
+                    <span class="badge bg-warning text-dark">Upcoming</span>
+                  </div>
+                </div>
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="card">
+    <div class="card-header bg-secondary text-white">
+      <h5>Completed Tests</h5>
+    </div>
+    <div class="card-body">
+      <% if (completedTests.length === 0) { %>
+        <div class="alert alert-info">No completed tests yet.</div>
+      <% } else { %>
+        <div class="list-group">
+          <% completedTests.slice(0, 3).forEach(test => { %>
+            <a href="/student/results" class="list-group-item list-group-item-action">
+              <div class="d-flex w-100 justify-content-between">
+                <h6 class="mb-1"><%= test.title %></h6>
+                <small><%= new Date(test.endDate).toLocaleDateString() %></small>
+              </div>
+              <p class="mb-1">Click to view your result</p>
+              <div class="d-flex justify-content-between">
+                <small>Total marks: <%= test.totalMarks %></small>
+                <span class="badge bg-secondary">Completed</span>
+              </div>
+            </a>
+          <% }); %>
+        </div>
+        <div class="mt-3 text-end">
+          <a href="/student/results" class="btn btn-sm btn-outline-primary">View All Results</a>
+        </div>
+      <% } %>
+    </div>
+  </div>

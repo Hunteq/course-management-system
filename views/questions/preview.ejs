@@ -1,0 +1,61 @@
+<div class="card">
+    <div class="card-header">
+      <h4>Question Preview</h4>
+    </div>
+    <div class="card-body">
+      <div class="mb-4">
+        <span class="badge bg-<%= 
+          question.questionType === 'mcq' ? 'primary' : 
+          question.questionType === 'short' ? 'info' : 
+          question.questionType === 'long' ? 'warning' : 'success' 
+        %> me-2">
+          <%= question.questionType.toUpperCase() %>
+        </span>
+        <span class="badge bg-secondary">
+          <%= question.marks %> Mark<%= question.marks !== 1 ? 's' : '' %>
+        </span>
+      </div>
+      
+      <h5><%= question.questionText %></h5>
+      
+      <% if (question.questionImage) { %>
+        <img src="<%= question.questionImage %>" class="img-fluid mb-3" style="max-height: 300px;">
+      <% } %>
+      
+      <% if (question.questionType === 'mcq') { %>
+        <div class="ms-4 mt-4">
+          <h6>Options:</h6>
+          <div class="list-group">
+            <% question.options.forEach((option, index) => { %>
+              <div class="list-group-item <%= option.isCorrect ? 'list-group-item-success' : '' %>">
+                <div class="d-flex align-items-center">
+                  <span class="me-3"><%= String.fromCharCode(65 + index) %>.</span>
+                  <div class="flex-grow-1">
+                    <%= option.text %>
+                    <% if (option.image) { %>
+                      <div class="mt-2">
+                        <img src="<%= option.image %>" class="img-thumbnail" style="max-height: 100px;">
+                      </div>
+                    <% } %>
+                  </div>
+                  <% if (option.isCorrect) { %>
+                    <span class="badge bg-success">Correct</span>
+                  <% } %>
+                </div>
+              </div>
+            <% }); %>
+          </div>
+        </div>
+      <% } else { %>
+        <div class="alert alert-light mt-4">
+          <h6>Correct Answer:</h6>
+          <p><%= question.correctAnswer %></p>
+        </div>
+      <% } %>
+    </div>
+    <div class="card-footer text-end">
+      <button type="button" class="btn btn-secondary" onclick="window.history.back()">Close</button>
+    </div>
+  </div>
+
+ 

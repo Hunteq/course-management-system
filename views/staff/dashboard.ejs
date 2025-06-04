@@ -1,0 +1,51 @@
+<div class="row">
+    <div class="col-md-4">
+      <div class="card text-white bg-primary mb-3">
+        <div class="card-header">Tests</div>
+        <div class="card-body">
+          <h5 class="card-title"><%= tests %></h5>
+          <p class="card-text">Total tests created</p>
+          <a href="/tests" class="btn btn-light btn-sm">Manage Tests</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-white bg-success mb-3">
+        <div class="card-header">Questions</div>
+        <div class="card-body">
+          <h5 class="card-title"><%= questions %></h5>
+          <p class="card-text">In question bank</p>
+          <a href="/questions" class="btn btn-light btn-sm">Manage Questions</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-white bg-info mb-3">
+        <div class="card-header">Published Tests</div>
+        <div class="card-body">
+          <h5 class="card-title"><%= publishedTests %></h5>
+          <p class="card-text">Available to students</p>
+          <a href="/tests" class="btn btn-light btn-sm">View Tests</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="card mt-4">
+    <div class="card-header">
+      <h5>Quick Actions</h5>
+    </div>
+    <div class="card-body">
+      <div class="d-grid gap-2 d-md-flex">
+        <a href="/tests/create" class="btn btn-primary me-md-2">
+          <i class="bi bi-plus-circle"></i> Create Test
+        </a>
+        <a href="/questions/create" class="btn btn-success me-md-2">
+          <i class="bi bi-plus-circle"></i> Add Question
+        </a>
+        <a href="/staff/upload-material" class="btn btn-info">
+          <i class="bi bi-upload"></i> Upload Material
+        </a>
+      </div>
+    </div>
+  </div>

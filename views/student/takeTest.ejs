@@ -1,0 +1,80 @@
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h4><%= test.title %></h4>
+      <div class="timer bg-danger text-white px-3 py-1 rounded">
+        Time Left: <span id="time">00:00</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <p class="card-text"><%= test.description %></p>
+      <p class="text-muted">Total Marks: <%= test.totalMarks %> | Passing Marks: <%= test.passingMarks %></p>
+      <hr>
+      
+      <form action="/tests/<%= test._id %>/submit" method="POST">
+        <% test.questions.forEach((item, index) => { 
+          const question = item.question;
+        %>
+          <div class="mb-4 p-3 border rounded">
+            <h5>Question <%= index + 1 %> (<%= item.marks %> mark<%= item.marks !== 1 ? 's' : '' %>)</h5>
+            <p><%= question.questionText %></p>
+            
+            <% if (question.questionImage) { %>
+              <img src="<%= question.questionImage %>" class="img-fluid mb-3" style="max-height: 200px;">
+            <% } %>
+            
+            <% if (question.questionType === 'mcq') { %>
+              <div class="ms-4">
+                <% question.options.forEach((option, optIndex) => { %>
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" 
+                      name="answer_<%= question._id %>" 
+                      id="opt_<%= question._id %>_<%= optIndex %>" 
+                      value="<%= option.text %>">
+                    <label class="form-check-label" for="opt_<%= question._id %>_<%= optIndex %>">
+                      <%= option.text %>
+                      <% if (option.image) { %>
+                        <img src="<%= option.image %>" class="img-fluid ms-2" style="max-height: 100px;">
+                      <% } %>
+                    </label>
+                  </div>
+                <% }); %>
+              </div>
+            <% } else { %>
+              <div class="form-group">
+                <textarea class="form-control" name="answer_<%= question._id %>" rows="<%= question.questionType === 'short' ? 2 : 4 %>"></textarea>
+              </div>
+            <% } %>
+          </div>
+        <% }); %>
+        
+        <button type="submit" class="btn btn-primary">Submit Test</button>
+      </form>
+    </div>
+  </div>
+  
+  <script>
+    // Timer functionality
+    const endTime = new Date("<%= test.endDate %>").getTime();
+    
+    function updateTimer() {
+      const now = new Date().getTime();
+      const distance = endTime - now;
+      
+      if (distance < 0) {
+        document.getElementById('time').textContent = 'EXPIRED';
+        // Auto-submit form when time expires
+        document.querySelector('form').submit();
+        return;
+      }
+      
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      
+      document.getElementById('time').textContent = 
+        `${hours > 0 ? hours + 'h ' : ''}${minutes}m ${seconds}s`;
+    }
+    
+    updateTimer();
+    setInterval(updateTimer, 1000);
+  </script>

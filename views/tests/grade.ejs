@@ -1,0 +1,62 @@
+<div class="card">
+    <div class="card-header">
+      <h4>Grade Test: <%= result.test.title %></h4>
+    </div>
+    <div class="card-body">
+      <form action="/tests/<%= result.test._id %>/results/<%= result._id %>/grade" method="POST">
+        <% result.answers.forEach((answer, index) => { %>
+          <div class="mb-4 p-3 border rounded">
+            <h5>Question <%= index + 1 %></h5>
+            <p><%= answer.question.questionText %></p>
+            
+            <% if (answer.question.questionImage) { %>
+              <img src="<%= answer.question.questionImage %>" class="img-fluid mb-3" style="max-height: 150px;">
+            <% } %>
+            
+            <div class="mb-3">
+              <strong>Student's Answer:</strong>
+              <div class="p-2 bg-light rounded">
+                <%= answer.answer || 'No answer provided' %>
+              </div>
+            </div>
+            
+            <% if (answer.question.questionType === 'mcq') { %>
+              <div class="mb-3">
+                <strong>Correct Answer:</strong>
+                <div class="p-2 bg-light rounded">
+                  <%= answer.question.options.find(opt => opt.isCorrect).text %>
+                </div>
+              </div>
+            <% } %>
+            
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="marks_<%= answer.question._id %>">Marks (Max: 
+                    <%= result.test.questions.find(q => q.question.toString() === answer.question._id.toString()).marks %>)
+                  </label>
+                  <input type="number" class="form-control" 
+                    name="marks_<%= answer.question._id %>" 
+                    id="marks_<%= answer.question._id %>"
+                    min="0" 
+                    max="<%= result.test.questions.find(q => q.question.toString() === answer.question._id.toString()).marks %>"
+                    value="<%= answer.marksObtained %>" required>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="feedback_<%= answer.question._id %>">Feedback</label>
+              <textarea class="form-control" 
+                name="feedback_<%= answer.question._id %>" 
+                id="feedback_<%= answer.question._id %>"
+                rows="3"><%= answer.feedback || '' %></textarea>
+            </div>
+          </div>
+        <% }); %>
+        
+        <button type="submit" class="btn btn-primary">Save Grading</button>
+        <a href="/tests/<%= result.test._id %>/results" class="btn btn-secondary">Cancel</a>
+      </form>
+    </div>
+  </div>

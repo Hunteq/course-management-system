@@ -1,0 +1,54 @@
+
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header">
+      <h4>Edit User</h4>
+    </div>
+    <div class="card-body">
+      <form action="/admin/users/<%= user._id %>?_method=PUT" method="POST">
+        <div class="mb-3">
+          <label for="name" class="form-label">Name</label>
+          <input type="text" class="form-control" id="name" name="name" value="<%= user.name %>" required>
+        </div>
+        
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" class="form-control" id="email" name="email" value="<%= user.email %>" required>
+        </div>
+        
+        <div class="mb-3">
+          <label for="role" class="form-label">Role</label>
+          <select class="form-select" id="role" name="role" required>
+            <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>Admin</option>
+            <option value="staff" <%= user.role === 'staff' ? 'selected' : '' %>>Staff</option>
+            <option value="student" <%= user.role === 'student' ? 'selected' : '' %>>Student</option>
+          </select>
+        </div>
+        
+        <div class="mb-3" id="batchField" <%= user.role === 'student' ? ' style="display:block;"' : 'style="display:none;"' %>>
+          <label for="batch" class="form-label">Batch</label>
+          <select class="form-select" id="batch" name="batch">
+            <option value="">Select Batch</option>
+            <% batches.forEach(batch => { %>
+              <option value="<%= batch._id %>" <%= user.batch && user.batch.toString() === batch._id.toString() ? 'selected' : '' %>>
+                <%= batch.name %>
+              </option>
+            <% }); %>
+          </select>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Update User</button>
+        <a href="/admin/manage-users" class="btn btn-secondary">Cancel</a>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Show/hide batch field based on role selection
+  document.getElementById('role').addEventListener('change', function() {
+    const batchField = document.getElementById('batchField');
+    batchField.style.display = this.value === 'student' ? 'block' : 'none';
+  });
+</script>
+

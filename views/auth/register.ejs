@@ -1,0 +1,84 @@
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title text-center">Register New Account</h4>
+        </div>
+        <div class="card-body">
+          <form action="/register" method="POST">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="name" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+              </div>
+            </div>
+  
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" minlength="6" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="password2" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="password2" name="password2" minlength="6" required>
+              </div>
+            </div>
+  
+            <div class="mb-3">
+              <label for="role" class="form-label">Account Type</label>
+              <select class="form-select" id="role" name="role" required>
+                <option value="">Select account type</option>
+                <option value="admin">Administrator</option>
+                <option value="staff">Teaching Staff</option>
+                <option value="student">Student</option>
+              </select>
+            </div>
+  
+            <div class="mb-3" id="batchField" style="display: none;">
+              <label for="batch" class="form-label">Batch</label>
+              <select class="form-select" id="batch" name="batch">
+                <option value="">Select batch</option>
+                <!-- Batches will be populated via AJAX -->
+              </select>
+            </div>
+  
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary">Register</button>
+            </div>
+          </form>
+        </div>
+        <div class="card-footer text-center">
+          Already have an account? <a href="/login">Login here</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Show/hide batch field based on role selection
+    document.getElementById('role').addEventListener('change', function() {
+      const batchField = document.getElementById('batchField');
+      if (this.value === 'student') {
+        batchField.style.display = 'block';
+        // Load batches via AJAX
+        fetch('/api/batches')
+          .then(response => response.json())
+          .then(batches => {
+            const select = document.getElementById('batch');
+            select.innerHTML = '<option value="">Select batch</option>';
+            batches.forEach(batch => {
+              const option = document.createElement('option');
+              option.value = batch._id;
+              option.textContent = batch.name;
+              select.appendChild(option);
+            });
+          });
+      } else {
+        batchField.style.display = 'none';
+      }
+    });
+  </script>

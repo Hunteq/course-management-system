@@ -1,0 +1,100 @@
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h4>Manage Users</h4>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+        Add New User
+      </button>
+    </div>
+    <div class="card-body">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% users.forEach(user => { %>
+            <tr>
+              <td><%= user.name %></td>
+              <td><%= user.email %></td>
+              <td><%= user.role %></td>
+              <td>
+                <a href="/admin/users/<%= user._id %>/edit" class="btn btn-sm btn-primary">Edit</a>
+                <form action="/admin/users/<%= user._id %>?_method=DELETE" method="POST">
+                    <button type="submit">Delete</button>
+                  </form>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- Add User Modal -->
+  <div class="modal fade" id="addUserModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add New User</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form action="/admin/manage-users" method="POST">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Name</label>
+              <input type="text" class="form-control" name="name" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Password</label>
+              <input type="password" class="form-control" name="password" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Confirm Password</label>
+              <input type="password" class="form-control" name="password2" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Role</label>
+              <select class="form-select" name="role" required>
+                <option value="admin">Admin</option>
+                <option value="staff">Staff</option>
+                <option value="student">Student</option>
+              </select>
+            </div>
+            <div class="mb-3" id="batchField">
+              <label class="form-label">Batch</label>
+              <select class="form-select" name="batch">
+                <option value="">Select Batch</option>
+                <% batches.forEach(batch => { %>
+                  <option value="<%= batch._id %>"><%= batch.name %></option>
+                <% }); %>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save User</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Show/hide batch field based on role selection
+    document.querySelector('select[name="role"]').addEventListener('change', function() {
+      const batchField = document.getElementById('batchField');
+      if (this.value === 'student') {
+        batchField.style.display = 'block';
+      } else {
+        batchField.style.display = 'none';
+      }
+    });
+  </script>

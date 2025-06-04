@@ -1,0 +1,83 @@
+<div class="card">
+    <div class="card-header">
+      <h4>Publish Test: <%= test.title %></h4>
+    </div>
+    <div class="card-body">
+      <div class="alert alert-warning">
+        <h5><i class="bi bi-exclamation-triangle"></i> Before You Publish</h5>
+        <p>Please review the following checklist before publishing this test:</p>
+        <ul>
+          <li>Test has all required questions</li>
+          <li>Total marks match the sum of question marks</li>
+          <li>Dates and times are correctly set</li>
+          <li>Correct batches are assigned</li>
+        </ul>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h6>Test Summary</h6>
+            </div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>Questions</span>
+                  <span><%= test.questions.length %></span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>Total Marks</span>
+                  <span><%= test.questions.reduce((sum, item) => sum + item.marks, 0) %> / <%= test.totalMarks %></span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>Duration</span>
+                  <span><%= test.duration %> minutes</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>Passing Marks</span>
+                  <span><%= test.passingMarks %></span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h6>Schedule</h6>
+            </div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <div class="fw-bold">Start Date</div>
+                  <%= new Date(test.startDate).toLocaleString() %>
+                </li>
+                <li class="list-group-item">
+                  <div class="fw-bold">End Date</div>
+                  <%= new Date(test.endDate).toLocaleString() %>
+                </li>
+                <li class="list-group-item">
+                  <div class="fw-bold">Assigned Batches</div>
+                  <% test.batches.forEach(batch => { %>
+                    <span class="badge bg-secondary me-1"><%= batch.name %></span>
+                  <% }); %>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-4">
+        <form action="/tests/<%= test._id %>/publish" method="POST">
+          <button type="submit" class="btn btn-success btn-lg">
+            <i class="bi bi-check-circle"></i> Confirm & Publish Test
+          </button>
+        </form>
+        <a href="/tests/<%= test._id %>/questions" class="btn btn-outline-secondary mt-3">
+          <i class="bi bi-arrow-left"></i> Back to Questions
+        </a>
+      </div>
+    </div>
+  </div>

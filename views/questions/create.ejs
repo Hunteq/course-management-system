@@ -1,0 +1,108 @@
+<div class="card">
+    <div class="card-header">
+      <h4>Create New Question</h4>
+    </div>
+    <div class="card-body">
+      <form action="/questions" method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label class="form-label">Question Type</label>
+          <select class="form-select" name="questionType" id="questionType" required>
+            <option value="">Select Question Type</option>
+            <option value="mcq">Multiple Choice (MCQ)</option>
+            <option value="short">Short Answer (1 mark)</option>
+            <option value="long">Long Answer (2 marks)</option>
+            <option value="image">Image Based (5 marks)</option>
+          </select>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Question Text</label>
+          <textarea class="form-control" name="questionText" rows="3" required></textarea>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Marks</label>
+          <select class="form-select" name="marks" required>
+            <option value="1">1 Mark</option>
+            <option value="2">2 Marks</option>
+            <option value="5">5 Marks</option>
+          </select>
+        </div>
+        
+        <div class="mb-3">
+          <label class="form-label">Question Image (Optional)</label>
+          <input type="file" class="form-control" name="image" accept="image/*">
+        </div>
+        
+        <!-- MCQ Options (shown only when MCQ is selected) -->
+        <div id="mcqOptions" style="display: none;">
+          <div class="mb-3">
+            <label class="form-label">MCQ Options</label>
+            <div id="optionsContainer">
+              <div class="option-item mb-2">
+                <div class="input-group">
+                  <input type="text" class="form-control" name="options[]" placeholder="Option text">
+                  <div class="input-group-text">
+                    <input class="form-check-input" type="checkbox" name="isCorrect_0">
+                  </div>
+                  <button type="button" class="btn btn-danger remove-option">Remove</button>
+                </div>
+              </div>
+            </div>
+            <button type="button" id="addOption" class="btn btn-sm btn-secondary mt-2">Add Option</button>
+          </div>
+        </div>
+        
+        <!-- Correct Answer (shown for non-MCQ questions) -->
+        <div id="correctAnswerField" style="display: none;">
+          <div class="mb-3">
+            <label class="form-label">Correct Answer</label>
+            <textarea class="form-control" name="correctAnswer" rows="3"></textarea>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Save Question</button>
+      </form>
+    </div>
+  </div>
+  
+  <script>
+    // Show/hide fields based on question type
+    document.getElementById('questionType').addEventListener('change', function() {
+      const mcqOptions = document.getElementById('mcqOptions');
+      const correctAnswerField = document.getElementById('correctAnswerField');
+      
+      if (this.value === 'mcq') {
+        mcqOptions.style.display = 'block';
+        correctAnswerField.style.display = 'none';
+      } else {
+        mcqOptions.style.display = 'none';
+        correctAnswerField.style.display = 'block';
+      }
+    });
+    
+    // Add/remove MCQ options
+    let optionCount = 1;
+    document.getElementById('addOption').addEventListener('click', function() {
+      const container = document.getElementById('optionsContainer');
+      const newOption = document.createElement('div');
+      newOption.className = 'option-item mb-2';
+      newOption.innerHTML = `
+        <div class="input-group">
+          <input type="text" class="form-control" name="options[]" placeholder="Option text">
+          <div class="input-group-text">
+            <input class="form-check-input" type="checkbox" name="isCorrect_${optionCount}">
+          </div>
+          <button type="button" class="btn btn-danger remove-option">Remove</button>
+        </div>
+      `;
+      container.appendChild(newOption);
+      optionCount++;
+    });
+    
+    document.addEventListener('click', function(e) {
+      if (e.target.classList.contains('remove-option')) {
+        e.target.closest('.option-item').remove();
+      }
+    });
+  </script>
